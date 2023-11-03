@@ -18,7 +18,7 @@ def find_edge(file_paths, output_directory="output"):
     output_path = os.path.join(output_directory, f"{name}.jpg")
     cv2.imwrite(output_path, blurred_image)
 
-    return blurred_image
+    return output_path
 
 
 

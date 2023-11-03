@@ -19,4 +19,4 @@ def enhance_image_color(input_path, output_folder="output"):
     output_path = os.path.join(output_folder, new_filename)
     enhanced_img.save(output_path)
 
-    return enhanced_img
+    return output_path

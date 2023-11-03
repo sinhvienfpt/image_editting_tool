@@ -20,9 +20,10 @@ def crop_image(file_paths, output_directory="output"):
 
     # Make a random name for it
     name = str(uuid.uuid4())[:8] + ".jpg"
-
+    output_img_path =os.path.join(output_directory, name)
+    
     # Save cropped img
-    cropped_img.save(os.path.join(output_directory, name))
+    cropped_img.save(output_img_path)
 
-    return cropped_img
+    return output_img_path
 

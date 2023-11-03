@@ -9,8 +9,8 @@ def blur_image(file_paths, output_directory="output"):
     img = cv2.imread(file_paths) #read image 
     
 
-    width = random.randint(1, 100)     #w, h are filter value
-    height = random.randint(1, 100)
+    width = random.randint(1, 50)     #w, h are filter value
+    height = random.randint(1, 50)
 
     #blur image 
     blurred_image = cv2.blur(img, ksize=(width, height))
@@ -22,7 +22,7 @@ def blur_image(file_paths, output_directory="output"):
     output_path = os.path.join(output_directory, f"{name}.jpg")
     cv2.imwrite(output_path, blurred_image)
 
-    return blurred_image
+    return output_path
 
 
 
