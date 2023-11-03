@@ -1,5 +1,5 @@
 from FUNCTIONS.all_modules import *
-import time
+
 #Theme setting
 customtkinter.set_default_color_theme("dark-blue")
 
@@ -137,12 +137,14 @@ class App(customtkinter.CTk):
         #The frame show the random output (Important)
 
         self.res_frame = customtkinter.CTkFrame(self)
-        self.res_frame.grid(row=1, column=1, rowspan=4, sticky="nsew")
-        
+        self.res_frame.grid(row=1, column=1, rowspan=4, sticky="nsew",padx=( 10, 0), pady=(20, 0),)
+        self.res_frame.grid_rowconfigure(2, weight=1) 
+        self.res_frame.grid_columnconfigure(0, weight=1)
+
         self.logo_label = customtkinter.CTkLabel(self.res_frame,
                                                  text="Your result here",
                                                  font=customtkinter.CTkFont(size=20, weight="bold"))
-        self.logo_label.grid(row=2, column=0, padx=20, pady=(20, 10))
+        self.logo_label.grid(row=2, column=0, padx=20, pady=(20, 20))
         self.res_frame.grid_rowconfigure(4, weight=1)
 
         
@@ -173,15 +175,14 @@ class App(customtkinter.CTk):
         self.scrollable_frame_switches = []
         #Make options
         switch_texts = {0:"Crop", 
-                        1:"Bright",
-                        2:"Gray Scale",
+                        1:"Flip",
+                        2:"Rotate",
                         3:"Blur",
                         4:"Color",
-                        5:"Rotate",
-                        6 : "Gray Scale",
-                        7 : "Edge Detection"
+                        5: "Gray Scale",
+                        6 : "Edge Detection"  
                         }   #A dictionary save the options
-        for i in range(8):
+        for i in range(7):
             switch = customtkinter.CTkSwitch(
                 master=self.scrollable_frame, text=f"{switch_texts[i]}")
             switch.grid(row=i, column=0, padx=10, pady=(0, 20))
@@ -276,7 +277,7 @@ class App(customtkinter.CTk):
 
         #Save the status of editting buttons 1: On 0:Off
         statuses = []
-        for i in range(8):
+        for i in range(7):
             if self.scrollable_frame_switches[i].get():
                 statuses.append(1)
             else:
@@ -289,8 +290,11 @@ class App(customtkinter.CTk):
             if statuses[0] == 1 : #Crop
                 crop.crop_image(self.input_image_dir)
                 
-            if statuses[2] == 1 : #Gray scale
-                gray_scale.gray_scale(self.input_image_dir)
+            if statuses[1] == 1 : #Flip
+                rotate_and_flip.flip_image(self.input_image_dir)
+                
+            if statuses[2] == 1 : #Rotate
+                rotate_and_flip.rotage_image(self.input_image_dir)
                 
             if statuses[3] == 1 : #Blur
                 blur.blur_image(self.input_image_dir)
@@ -298,10 +302,10 @@ class App(customtkinter.CTk):
             if statuses[4] == 1 : #Change color
                 change_color.enhance_image_color(self.input_image_dir)
                 
-            if statuses[6] == 1 : #Gray Scale
+            if statuses[5] == 1 : #Gray Scale
                 gray_scale.gray_scale(self.input_image_dir)
                 
-            if statuses[7] == 1 : #Edge Detection
+            if statuses[6] == 1 : #Edge Detection
                 edge_detection.find_edge(self.input_image_dir)
         
 
