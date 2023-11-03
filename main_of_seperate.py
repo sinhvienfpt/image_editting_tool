@@ -11,7 +11,7 @@ class App(customtkinter.CTk):
          
         #We need to do with image input and number of image expected (important)
         self.input_image_dir = "./documentation_images/group5.jpg" #default img show group name
-        self.number_Expected = 10
+        self.number_Expected = 1
         
 
         # configure window
@@ -101,32 +101,25 @@ class App(customtkinter.CTk):
 
 
     # create tabview to ask user how many image is enough
-        self.tabview = customtkinter.CTkTabview(self, width=250)
-        self.tabview.grid(row=0, column=2, padx=(
-            10, 0), pady=(20, 0), sticky="nsew")
-        self.tabview.add("How many image??")
-        # configure grid of individual tabs
-        self.tabview.tab("How many image??").grid_columnconfigure(0, weight=1)
 
-        # Input  a number
-        self.label_number_expect_image = customtkinter.CTkLabel(self.tabview.tab("How many image??"),
-                                                        text = "Insert number of images you expect")
-        self.label_number_expect_image.grid(row=0, column=0, padx=10, pady=(20, 20))
+        self.num_frame = customtkinter.CTkFrame(self)
+        self.num_frame.grid(row=0, column=2, sticky="nsew",padx=(20,0), pady=(20,0))
+        self.num_frame.grid_rowconfigure(2, weight=1) 
+        self.num_frame.grid_columnconfigure(0, weight=1)
+        self.logo_label = customtkinter.CTkLabel(self.num_frame,
+                                                 text="How many image?",
+                                                 font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.logo_label.grid(row=1, column=0, padx=20, pady=(20, 20))
+        self.num_frame.grid_rowconfigure(4, weight=1)
+        
 
-        self.nums_image = customtkinter.CTkButton(self.tabview.tab("How many image??"), text="Input number of images",
-                                                  command=self.open_input_dialog_event)
-        self.nums_image.grid(row=2, column=0)
-
-        self.input_or_random = customtkinter.CTkLabel(self.tabview.tab("How many image??"), 
-                                                      text="Or")
-        self.input_or_random.grid(row=3, column=0)
-
-        self.random_num_image = customtkinter.CTkButton(self.tabview.tab("How many image??"),
+        
+        self.random_num_image = customtkinter.CTkButton(self.num_frame,
                                                         text="Random a number",
                                                         command=self.random_number_event)
         self.random_num_image.grid(row=4, column=0)
-
-        self.nums_show = customtkinter.CTkEntry(self.tabview.tab("How many image??"),
+        
+        self.nums_show = customtkinter.CTkEntry(self.num_frame,
                                                 placeholder_text="Number expect",
                                                 )
         self.nums_show.grid(row=5, column=0, columnspan=2,
@@ -137,7 +130,7 @@ class App(customtkinter.CTk):
         #The frame show the random output (Important)
 
         self.res_frame = customtkinter.CTkFrame(self)
-        self.res_frame.grid(row=1, column=1, rowspan=4, sticky="nsew",padx=( 10, 0), pady=(20, 0),)
+        self.res_frame.grid(row=1, column=1, rowspan=4, sticky="nsew",padx=( 10, 0), pady=(20, 0))
         self.res_frame.grid_rowconfigure(2, weight=1) 
         self.res_frame.grid_columnconfigure(0, weight=1)
 
@@ -255,22 +248,13 @@ class App(customtkinter.CTk):
         self.nums_show.insert(0, str(random_number))
         self.number_Expected = random_number  # assign it to the number_Expected
 
-    def open_input_dialog_event(self):
-        dialog = customtkinter.CTkInputDialog(
-            text="Type in a number:", title="")
-        number = dialog.get_input()
-        try :
-            number = int(number)
-            self.nums_show.delete(0, tkinter.END)
-            self.nums_show.insert(0, str(number))
-            self.number_Expected = number  # assign it to the number_Expected
-        except:
-            self.open_input_dialog_event()
-        
+
 
    
     #Everything start when click run button
     def run_button(self):
+        #Get number expect
+        self.number_Expected = int(self.nums_show.get())
         #Delete Old Things
         for file in os.listdir("./output"):
             os.remove(os.path.join("./output", file))
