@@ -3,20 +3,10 @@ import random
 import PIL.Image as image
 import uuid
 
-# Get the path of the folder and output
-output_path = os.path.join(os.getcwd(), "./Output")
-
-# make a folder output if it doesn't exist
-if not os.path.exists(output_path):
-    os.makedirs(output_path)
 
 
-def crop_image(file_paths, output_directory=output_path):
-    
-    # #Delete the old things
-    # for file in os.listdir(output_path):
-    #     os.remove(os.path.join(output_path, file))
 
+def crop_image(file_paths, output_directory="output"):
     # Get a random img path in list of img paths and open it
     img = image.open(file_paths)
     width, height = img.size
@@ -34,4 +24,5 @@ def crop_image(file_paths, output_directory=output_path):
     # Save cropped img
     cropped_img.save(os.path.join(output_directory, name))
 
-    
+    return cropped_img
+

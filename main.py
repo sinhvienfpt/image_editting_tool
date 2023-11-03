@@ -1,12 +1,5 @@
-import tkinter
-import tkinter.messagebox
-import customtkinter
-from random import randint,choice
-import PIL.Image as image
-import webbrowser
-import os
-import Crop
-
+from FUNCTIONS.all_modules import *
+import time
 #Theme setting
 customtkinter.set_default_color_theme("dark-blue")
 
@@ -17,8 +10,8 @@ class App(customtkinter.CTk):
         super().__init__()
          
         #We need to do with image input and number of image expected (important)
-        self.input_image_dir = "./group5.jpg"
-        self.number_Expected = 0
+        self.input_image_dir = "./documentation_images/group5.jpg" #default img show group name
+        self.number_Expected = 10
         
 
         # configure window
@@ -141,13 +134,17 @@ class App(customtkinter.CTk):
 
 
 
-        #The tab view show the random output (Important)
-        self.tabview = customtkinter.CTkTabview(self, width=250)
-        self.tabview.grid(row=1, column=1, padx=(
-            10, 0), pady=(20, 0), sticky="nsew")
-        self.tabview.add("Random a result")
-        self.tabview.tab("Random a result").grid_columnconfigure(0, weight=1)
-        self.tabview.tab("Random a result").bind("<Button-1>", self.show_random_img)
+        #The frame show the random output (Important)
+
+        self.res_frame = customtkinter.CTkFrame(self)
+        self.res_frame.grid(row=1, column=1, rowspan=4, sticky="nsew")
+        
+        self.logo_label = customtkinter.CTkLabel(self.res_frame,
+                                                 text="Your result here",
+                                                 font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.logo_label.grid(row=2, column=0, padx=20, pady=(20, 10))
+        self.res_frame.grid_rowconfigure(4, weight=1)
+
         
         
         #Show a "result picture" first
@@ -155,10 +152,14 @@ class App(customtkinter.CTk):
         resized_img = img.resize((200, 200))
         ctk_img = customtkinter.CTkImage(resized_img, size=(250, 250))
         self.random_img = customtkinter.CTkLabel(
-            self.tabview.tab("Random a result"), image=ctk_img, text="")
+            self.res_frame, image=ctk_img, text="")
         self.random_img.grid(row=3, column=0, columnspan=2,
                                padx=10, pady=5, sticky="nsew")
-    
+
+        
+        self.randomimgbutton = customtkinter.CTkButton(self.res_frame, text="Click here to random one",
+                                                        command=self.show_random_img)
+        self.randomimgbutton.grid(row=4,padx = (20,20) , pady = (20,20))
     
     
     
@@ -173,12 +174,14 @@ class App(customtkinter.CTk):
         #Make options
         switch_texts = {0:"Crop", 
                         1:"Bright",
-                        2:"Constract",
-                        3:"Resize",
+                        2:"Gray Scale",
+                        3:"Blur",
                         4:"Color",
                         5:"Rotate",
+                        6 : "Gray Scale",
+                        7 : "Edge Detection"
                         }   #A dictionary save the options
-        for i in range(6):
+        for i in range(8):
             switch = customtkinter.CTkSwitch(
                 master=self.scrollable_frame, text=f"{switch_texts[i]}")
             switch.grid(row=i, column=0, padx=10, pady=(0, 20))
@@ -201,9 +204,9 @@ class App(customtkinter.CTk):
 
     #______________________________________________________________FUNC_____________________________________________________
     #Show a random result image
-    def show_random_img(self,event):
+    def show_random_img(self):
         #Get Paths
-        all_output_img_path = os.path.join(os.getcwd(), "./Output") 
+        all_output_img_path = os.path.join(os.getcwd(), "./output") 
         files = os.listdir(all_output_img_path)
         rd_img_name = choice(files)
         rd_img_path = os.path.join(all_output_img_path, rd_img_name)
@@ -213,7 +216,7 @@ class App(customtkinter.CTk):
         resized_img = img.resize((200, 200))
         ctk_img = customtkinter.CTkImage(resized_img, size=(250, 250))
         self.random_img = customtkinter.CTkLabel(
-            self.tabview.tab("Random a result"), image=ctk_img, text="")
+            self.res_frame, image=ctk_img, text="")
         self.random_img.grid(row=3, column=0, columnspan=2,
                                padx=10, pady=5, sticky="nsew")
 
@@ -268,28 +271,43 @@ class App(customtkinter.CTk):
     #Everything start when click run button
     def run_button(self):
         #Delete Old Things
-        for file in os.listdir("./Output"):
-            os.remove(os.path.join("./Output", file))
+        for file in os.listdir("./output"):
+            os.remove(os.path.join("./output", file))
 
         #Save the status of editting buttons 1: On 0:Off
         statuses = []
-        for i in range(6):
+        for i in range(8):
             if self.scrollable_frame_switches[i].get():
                 statuses.append(1)
             else:
                 statuses.append(0)
 
 
-        #Make changes for each images
+        #Make changes for each images and save it (IMPORTANT)
         for i in range(self.number_Expected):
             #Changes
             if statuses[0] == 1 : #Crop
-                Crop.crop_image(self.input_image_dir)
+                crop.crop_image(self.input_image_dir)
                 
+            if statuses[2] == 1 : #Gray scale
+                gray_scale.gray_scale(self.input_image_dir)
+                
+            if statuses[3] == 1 : #Blur
+                blur.blur_image(self.input_image_dir)
+                
+            if statuses[4] == 1 : #Change color
+                change_color.enhance_image_color(self.input_image_dir)
+                
+            if statuses[6] == 1 : #Gray Scale
+                gray_scale.gray_scale(self.input_image_dir)
+                
+            if statuses[7] == 1 : #Edge Detection
+                edge_detection.find_edge(self.input_image_dir)
+        
 
             
         #Show the first output image
-        all_output_img_path = os.path.join(os.getcwd(), "./Output") 
+        all_output_img_path = os.path.join(os.getcwd(), "./output") 
         files = os.listdir(all_output_img_path)
         rd_img_name = choice(files)
         rd_img_path = os.path.join(all_output_img_path, rd_img_name)
@@ -299,11 +317,12 @@ class App(customtkinter.CTk):
         resized_img = img.resize((200, 200))
         ctk_img = customtkinter.CTkImage(resized_img, size=(250, 250))
         self.random_img = customtkinter.CTkLabel(
-            self.tabview.tab("Random a result"), image=ctk_img, text="")
+            self.res_frame, image=ctk_img, text="")
         self.random_img.grid(row=3, column=0, columnspan=2,
                                padx=10, pady=5, sticky="nsew")
+
+
             
-        
         
 
 
@@ -315,8 +334,11 @@ class App(customtkinter.CTk):
 
         webbrowser.open("https://www.facebook.com/nghoangziet/")
 
-
 if __name__ == "__main__":
+    output_path = os.path.join(os.getcwd(), "./output")
+    # make a folder output if it doesn't exist
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
     app = App()
 
     app.mainloop()
