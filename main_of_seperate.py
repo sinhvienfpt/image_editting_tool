@@ -11,7 +11,7 @@ class App(customtkinter.CTk):
          
         #We need to do with image input and number of image expected (important)
         self.input_image_dir = "./documentation_images/group5.jpg" #default img show group name
-        self.number_Expected = 1
+        self.number_Expected = None
         
 
         # configure window
@@ -111,9 +111,7 @@ class App(customtkinter.CTk):
                                                  font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=1, column=0, padx=20, pady=(20, 20))
         self.num_frame.grid_rowconfigure(4, weight=1)
-        
 
-        
         self.random_num_image = customtkinter.CTkButton(self.num_frame,
                                                         text="Random a number",
                                                         command=self.random_number_event)
@@ -140,12 +138,14 @@ class App(customtkinter.CTk):
         self.logo_label.grid(row=2, column=0, padx=20, pady=(20, 20))
         self.res_frame.grid_rowconfigure(4, weight=1)
 
+
         
         
         #Show a "result picture" first
         img = image.open("./documentation_images/result.jpg")
         resized_img = img.resize((200, 200))
         ctk_img = customtkinter.CTkImage(resized_img, size=(250, 250))
+        
         self.random_img = customtkinter.CTkLabel(
             self.res_frame, image=ctk_img, text="")
         self.random_img.grid(row=3, column=0, columnspan=2,
@@ -253,8 +253,14 @@ class App(customtkinter.CTk):
    
     #Everything start when click run button
     def run_button(self):
-        #Get number expect
-        self.number_Expected = int(self.nums_show.get())
+        #Get number expect ,default = 5
+        try:
+
+            self.number_Expected = int(self.nums_show.get())
+        except :
+            self.number_Expected = 5
+            
+            
         #Delete Old Things
         for file in os.listdir("./output"):
             os.remove(os.path.join("./output", file))

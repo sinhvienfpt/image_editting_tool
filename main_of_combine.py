@@ -253,8 +253,13 @@ class App(customtkinter.CTk):
    
     #Everything start when click run button
     def run_button(self):
-        #Get number expect
-        self.number_Expected = int(self.nums_show.get())
+        #Get number expect ,default = 5
+        try:
+
+            self.number_Expected = int(self.nums_show.get())
+        except :
+            self.number_Expected = 5
+            
         #Delete Old Things
         for file in os.listdir("./output"):
             os.remove(os.path.join("./output", file))

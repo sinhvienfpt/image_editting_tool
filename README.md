@@ -1,4 +1,5 @@
 # image_editting_tool
+![Alt text](image.png)
 AI18C/PFP191/Group5
 
 This is the assignment_2 of our group about Image Augmentation. 
@@ -12,3 +13,4 @@ Thank you for your visit!!!
 by: Hoang Viet Nguyen
 
 email: vietnhqe180058@fpt.edu.vn
+
