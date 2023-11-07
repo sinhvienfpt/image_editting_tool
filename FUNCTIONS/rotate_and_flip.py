@@ -3,7 +3,7 @@ import random
 import cv2
 import uuid
 
-def rotage_image(image_path, output_directory='output'):
+def rotate_image(image_path, output_directory='output'):
     # Open the image
     img = cv2.imread(image_path)
     # Generate a random rotation angle between 0 and 360 degrees

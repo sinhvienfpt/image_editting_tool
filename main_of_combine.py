@@ -260,6 +260,7 @@ class App(customtkinter.CTk):
         except :
             self.number_Expected = 5
             
+        
         #Delete Old Things
         for file in os.listdir("./output"):
             os.remove(os.path.join("./output", file))
@@ -284,7 +285,7 @@ class App(customtkinter.CTk):
                 self.input_image_dir=rotate_and_flip.flip_image(self.input_image_dir)
                 
             if statuses[2] == 1 : #Rotate
-                self.input_image_dir=rotate_and_flip.rotage_image(self.input_image_dir)
+                self.input_image_dir=rotate_and_flip.rotate_image(self.input_image_dir)
                 
             if statuses[3] == 1 : #Blur
                 self.input_image_dir=blur.blur_image(self.input_image_dir)

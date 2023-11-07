@@ -284,7 +284,7 @@ class App(customtkinter.CTk):
                 rotate_and_flip.flip_image(self.input_image_dir)
                 
             if statuses[2] == 1 : #Rotate
-                rotate_and_flip.rotage_image(self.input_image_dir)
+                rotate_and_flip.rotate_image(self.input_image_dir)
                 
             if statuses[3] == 1 : #Blur
                 blur.blur_image(self.input_image_dir)
