@@ -171,7 +171,7 @@ class App(customtkinter.CTk):
                         1:"Flip",
                         2:"Rotate",
                         3:"Blur",
-                        4:"Color",
+                        4:"Filter",
                         5: "Gray Scale",
                         6 : "Edge Detection"  
                         }   #A dictionary save the options
@@ -290,8 +290,8 @@ class App(customtkinter.CTk):
             if statuses[3] == 1 : #Blur
                 self.input_image_dir=blur.blur_image(self.input_image_dir)
                 
-            if statuses[4] == 1 : #Change color
-                self.input_image_dir=change_color.enhance_image_color(self.input_image_dir)
+            if statuses[4] == 1 : #Filter
+                self.input_image_dir=filter_im.change_color_image(self.input_image_dir)
                 
             if statuses[5] == 1 : #Gray Scale
                 self.input_image_dir=gray_scale.gray_scale(self.input_image_dir)

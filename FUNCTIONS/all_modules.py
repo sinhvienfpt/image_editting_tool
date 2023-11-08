@@ -13,6 +13,6 @@ sys.path.append("./FUNCTIONS")
 import blur
 import crop
 import gray_scale
-import change_color
 import edge_detection
 import rotate_and_flip
+import filter_im
