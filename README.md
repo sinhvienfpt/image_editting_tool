@@ -1,5 +1,6 @@
 # image_editting_tool
-![Alt text](image.png)
+![image](https://github.com/sinhvienfpt/image_editting_tool/assets/108646783/9c014770-5b81-451f-bcce-17b74461453c)
+
 AI18C/PFP191/Group5
 
 This is the assignment_2 of our group about Image Augmentation. 
