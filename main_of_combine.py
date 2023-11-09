@@ -1,4 +1,13 @@
-from FUNCTIONS.all_modules import *
+
+
+import tkinter
+import tkinter.messagebox
+import customtkinter
+from random import randint,choice
+import PIL.Image as image
+import webbrowser
+import os
+from functions import *
 
 #Theme setting
 customtkinter.set_default_color_theme("dark-blue")
@@ -265,6 +274,8 @@ class App(customtkinter.CTk):
         for file in os.listdir("./output"):
             os.remove(os.path.join("./output", file))
 
+
+
         #Save the status of editting buttons 1: On 0:Off
         statuses = []
         for i in range(7):
@@ -277,44 +288,62 @@ class App(customtkinter.CTk):
 
         #Make changes for each images and save it (IMPORTANT)
         for i in range(self.number_Expected):
+
+            #Open image
+            self.input_image_dir = self.input_dir.get()
+            
+            img = cv2.imread(self.input_image_dir)
+            if img is None:
+                self.show_popup_error("CAN NOT OPEN THIS PATH!!!")
+                break
             #Changes
             if statuses[0] == 1 : #Crop
-                self.input_image_dir=crop.crop_image(self.input_image_dir)
+                img = crop_image(img)
                 
             if statuses[1] == 1 : #Flip
-                self.input_image_dir=rotate_and_flip.flip_image(self.input_image_dir)
+                img = flip_image(img)
                 
             if statuses[2] == 1 : #Rotate
-                self.input_image_dir=rotate_and_flip.rotate_image(self.input_image_dir)
+                img = rotate_image(img)
                 
             if statuses[3] == 1 : #Blur
-                self.input_image_dir=blur.blur_image(self.input_image_dir)
+                img = blur_image(img)
                 
             if statuses[4] == 1 : #Filter
-                self.input_image_dir=filter_im.change_color_image(self.input_image_dir)
+
+                try:
+                    img = change_color_image(img)
+                except:
+                    
+                    self.show_popup_error("A RANDOM FILTER CAN NOT RUN WITH THIS IMAGE")
+                    continue
+
+
                 
             if statuses[5] == 1 : #Gray Scale
-                self.input_image_dir=gray_scale.gray_scale(self.input_image_dir)
+                img = gray_scale(img)
                 
             if statuses[6] == 1 : #Edge Detection
-                self.input_image_dir=edge_detection.find_edge(self.input_image_dir)
-        
+                img = find_edge(img)
 
             
-        #Show the first output image
-        all_output_img_path = os.path.join(os.getcwd(), "./output") 
-        files = os.listdir(all_output_img_path)
-        rd_img_name = choice(files)
-        rd_img_path = os.path.join(all_output_img_path, rd_img_name)
-        
-        #Show img
-        img = image.open(rd_img_path)
-        resized_img = img.resize((200, 200))
-        ctk_img = customtkinter.CTkImage(resized_img, size=(250, 250))
-        self.random_img = customtkinter.CTkLabel(
-            self.res_frame, image=ctk_img, text="")
-        self.random_img.grid(row=3, column=0, columnspan=2,
-                               padx=10, pady=5, sticky="nsew")
+
+        try:
+            #Show the first output image
+            all_output_img_path = os.path.join(os.getcwd(), "./output") 
+            files = os.listdir(all_output_img_path)
+            rd_img_name = choice(files)
+            rd_img_path = os.path.join(all_output_img_path, rd_img_name)
+            #Show img
+            img = image.open(rd_img_path)
+            resized_img = img.resize((200, 200))
+            ctk_img = customtkinter.CTkImage(resized_img, size=(250, 250))
+            self.random_img = customtkinter.CTkLabel(
+                self.res_frame, image=ctk_img, text="")
+            self.random_img.grid(row=3, column=0, columnspan=2,
+                                padx=10, pady=5, sticky="nsew")
+        except Exception as e :
+            self.show_popup_error(e)
 
 
             
@@ -328,12 +357,19 @@ class App(customtkinter.CTk):
     def click_facebook(self):
 
         webbrowser.open("https://www.facebook.com/nghoangziet/")
+        
+    def show_popup_error(self,s):
+        if str(s) == "Cannot choose from an empty sequence":
+            s = "There's nothing in the output folder. Maybe you forgot to choose an option!"
+        dialog = customtkinter.CTkInputDialog(
+            text=s, title="NOTIFICATION")
 
 if __name__ == "__main__":
     output_path = os.path.join(os.getcwd(), "./output")
     # make a folder output if it doesn't exist
     if not os.path.exists(output_path):
         os.makedirs(output_path)
+
     app = App()
 
     app.mainloop()

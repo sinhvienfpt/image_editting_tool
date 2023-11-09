@@ -1,5 +1,12 @@
-from FUNCTIONS.all_modules import *
-
+#Builtin modules
+import tkinter
+import tkinter.messagebox
+import customtkinter
+from random import randint,choice
+import PIL.Image as image
+import webbrowser
+import os
+from functions import *
 #Theme setting
 customtkinter.set_default_color_theme("dark-blue")
 
@@ -238,19 +245,13 @@ class App(customtkinter.CTk):
 
         
 
-
-
-
-    #Get the number of output image
+        #Get the number of output image
     def random_number_event(self):
         random_number = randint(0, 20)
         self.nums_show.delete(0, tkinter.END)
         self.nums_show.insert(0, str(random_number))
         self.number_Expected = random_number  # assign it to the number_Expected
 
-
-
-   
     #Everything start when click run button
     def run_button(self):
         #Get number expect ,default = 5
@@ -260,10 +261,12 @@ class App(customtkinter.CTk):
         except :
             self.number_Expected = 5
             
-            
+        
         #Delete Old Things
         for file in os.listdir("./output"):
             os.remove(os.path.join("./output", file))
+
+
 
         #Save the status of editting buttons 1: On 0:Off
         statuses = []
@@ -274,49 +277,69 @@ class App(customtkinter.CTk):
                 statuses.append(0)
 
 
+
         #Make changes for each images and save it (IMPORTANT)
         for i in range(self.number_Expected):
+
+            #Open image
+            self.input_image_dir = self.input_dir.get()
+            
+            img = cv2.imread(self.input_image_dir)
+            if img is None:
+                self.show_popup_error("CAN NOT OPEN THIS PATH!!!")
+                break
             #Changes
             if statuses[0] == 1 : #Crop
-                crop.crop_image(self.input_image_dir)
+                crop_image(img)
                 
             if statuses[1] == 1 : #Flip
-                rotate_and_flip.flip_image(self.input_image_dir)
+                flip_image(img)
                 
             if statuses[2] == 1 : #Rotate
-                rotate_and_flip.rotate_image(self.input_image_dir)
+                rotate_image(img)
                 
             if statuses[3] == 1 : #Blur
-                blur.blur_image(self.input_image_dir)
-                
+                blur_image(img)
+ 
             if statuses[4] == 1 : #Filter
-                filter_im.change_color_image(self.input_image_dir)
+
+                try:
+                    change_color_image(img)
+                except:
+                    
+                    self.show_popup_error("A RANDOM FILTER CAN NOT RUN WITH THIS IMAGE")
+                    continue
                 
             if statuses[5] == 1 : #Gray Scale
-                gray_scale.gray_scale(self.input_image_dir)
+                gray_scale(img)
                 
             if statuses[6] == 1 : #Edge Detection
-                edge_detection.find_edge(self.input_image_dir)
-        
+                find_edge(img)
 
             
-        #Show the first output image
-        all_output_img_path = os.path.join(os.getcwd(), "./output") 
-        files = os.listdir(all_output_img_path)
-        rd_img_name = choice(files)
-        rd_img_path = os.path.join(all_output_img_path, rd_img_name)
-        
-        #Show img
-        img = image.open(rd_img_path)
-        resized_img = img.resize((200, 200))
-        ctk_img = customtkinter.CTkImage(resized_img, size=(250, 250))
-        self.random_img = customtkinter.CTkLabel(
-            self.res_frame, image=ctk_img, text="")
-        self.random_img.grid(row=3, column=0, columnspan=2,
-                               padx=10, pady=5, sticky="nsew")
+
+        try:
+            #Show the first output image
+            all_output_img_path = os.path.join(os.getcwd(), "./output") 
+            files = os.listdir(all_output_img_path)
+            rd_img_name = choice(files)
+            rd_img_path = os.path.join(all_output_img_path, rd_img_name)
+            #Show img
+            img = image.open(rd_img_path)
+            resized_img = img.resize((200, 200))
+            ctk_img = customtkinter.CTkImage(resized_img, size=(250, 250))
+            self.random_img = customtkinter.CTkLabel(
+                self.res_frame, image=ctk_img, text="")
+            self.random_img.grid(row=3, column=0, columnspan=2,
+                                padx=10, pady=5, sticky="nsew")
+        except Exception as e :
+            self.show_popup_error(e)
 
 
             
+        
+
+
         
 
 
@@ -327,6 +350,12 @@ class App(customtkinter.CTk):
     def click_facebook(self):
 
         webbrowser.open("https://www.facebook.com/nghoangziet/")
+
+    def show_popup_error(self,s):
+        if str(s) == "Cannot choose from an empty sequence":
+            s = "There's nothing in the output folder. Maybe you forgot to choose an option!"
+        dialog = customtkinter.CTkInputDialog(
+            text=s, title="NOTIFICATION")
 
 if __name__ == "__main__":
     output_path = os.path.join(os.getcwd(), "./output")
